@@ -13,8 +13,8 @@ import ast  # 문자열을 실제 리스트로 변환하기 위한 라이브러�
 class PCAService:
     def __init__(self):
         self.scaler = StandardScaler()
-        # self.df = pd.read_csv('data/openAI_embedding_Test.csv')
-        self.df = pd.read_csv('data/embed_test_data.csv')
+        self.df = pd.read_csv('data/ezgg.csv')
+        # self.df = pd.read_csv('data/embed_test_data.csv')
 
     def __parse_embedding(self, embedding_str):
         cleaned_str = embedding_str.strip().strip('[]')
@@ -23,7 +23,7 @@ class PCAService:
 
     def visualize_2d(self):
         # AO 컬럼을 실제 인덱스로 바꿀 것 (AO는 0부터 시작하면 40번째임)
-        embedding_index = 40  # AO번째가 실제로는 40번째(0부터 세었을 때)
+        embedding_index = 2  # AO번째가 실제로는 40번째(0부터 세었을 때)
         embeddings = self.df.iloc[:, embedding_index].apply(self.__parse_embedding)
         embeddings_matrix = np.vstack(embeddings.values)  # 2D 배열로 변환
 
@@ -35,8 +35,8 @@ class PCAService:
         result_df = pd.DataFrame({
             'PC1': reduced_embeddings[:, 0],
             'PC2': reduced_embeddings[:, 1],
-            'original_info': self.df.iloc[:, 1],  # 마우스 Hover 정보 (원하는 컬럼 지정)
-            'upjong': self.df.iloc[:, 6]  # 색상 기준 컬럼 (원하는 컬럼 지정)
+            'id': self.df.iloc[:, 0],  # 마우스 Hover 정보 (원하는 컬럼 지정)
+            'type': self.df.iloc[:, 1]  # 색상 기준 컬럼 (원하는 컬럼 지정)
         })
 
         # PCA 결과 시각화
@@ -53,7 +53,7 @@ class PCAService:
 
     def visualize_3d(self):
         # 데이터 정제
-        embedding_index = 40
+        embedding_index = 2
         embeddings = self.df.iloc[:, embedding_index].apply(self.__parse_embedding)
         embeddings_matrix = np.vstack(embeddings.values)
         # PCA 를 통해 차원 압축
@@ -65,8 +65,8 @@ class PCAService:
             'PC1': reduced_embeddings[:, 0],
             'PC2': reduced_embeddings[:, 1],
             'PC3': reduced_embeddings[:, 2],
-            'original_info': self.df.iloc[:, 1],  # 마우스 올렸을 때 정보 확인
-            'upjong': self.df.iloc[:, 6] # 분포 색깔 확인
+            'id': self.df.iloc[:, 0],  # 마우스 올렸을 때 정보 확인
+            'type': self.df.iloc[:, 1].apply(lambda x: str(x)[:10]) # 분포 색깔 확인
         })
 
         # PCA가 설명하는 분산 비율 출력 (각 PC의 중요성 파악)
@@ -79,8 +79,8 @@ class PCAService:
         # 3D Plotly로 interactive 시각화
         fig = px.scatter_3d(
             result_df, x='PC1', y='PC2', z='PC3',
-            color='upjong',
-            hover_data=['original_info'],
+            color='type',
+            hover_data=['id'],
             title='3D PCA Visualization of Embeddings'
         )
         fig.update_traces(marker=dict(size=4, opacity=0.7))
