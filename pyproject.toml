@@ -10,5 +10,5 @@ dependencies = [
     "pandas>=2.2.3",
     "plotly>=6.0.1",
     "scikit-learn>=1.6.1",
-    "uvicorn>=0.34.1",
+    "uvicorn==0.34.1",
 ]

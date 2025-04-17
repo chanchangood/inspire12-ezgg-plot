@@ -8,10 +8,10 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/plot")
+@app.get("/plot/2d")
 async def get_pca():
     p = PCAService()
-    p.visualize()
+    p.visualize_2d()
     return {"message": "Hello World"}
 
 @app.get("/plot/3d")

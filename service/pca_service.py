@@ -2,6 +2,7 @@ import re
 
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,11 +18,10 @@ class PCAService:
 
     def __parse_embedding(self, embedding_str):
         cleaned_str = embedding_str.strip().strip('[]')
-        cleaned_str = cleaned_str.replace(",","")
+        cleaned_str = cleaned_str.replace(",", "")
         return np.array([float(num) for num in cleaned_str.split()])
 
-
-    def visualize(self):
+    def visualize_2d(self):
         # AO 컬럼을 실제 인덱스로 바꿀 것 (AO는 0부터 시작하면 40번째임)
         embedding_index = 40  # AO번째가 실제로는 40번째(0부터 세었을 때)
         embeddings = self.df.iloc[:, embedding_index].apply(self.__parse_embedding)
@@ -31,32 +31,42 @@ class PCAService:
         pca = PCA(n_components=2)
         reduced_embeddings = pca.fit_transform(embeddings_matrix)
 
-        # 4. 시각화하기
-        plt.figure(figsize=(10, 7))
-        plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], alpha=0.6, s=50)
-        plt.title('PCA Visualization of Embeddings')
-        plt.xlabel('PC 1')
-        plt.ylabel('PC 2')
-        plt.grid(True)
-        plt.show()
+        # PCA 결과를 데이터프레임으로 만듦 (색상과 Hover 정보 포함)
+        result_df = pd.DataFrame({
+            'PC1': reduced_embeddings[:, 0],
+            'PC2': reduced_embeddings[:, 1],
+            'original_info': self.df.iloc[:, 1],  # 마우스 Hover 정보 (원하는 컬럼 지정)
+            'upjong': self.df.iloc[:, 6]  # 색상 기준 컬럼 (원하는 컬럼 지정)
+        })
+
+        # PCA 결과 시각화
+        fig = px.scatter(
+            result_df, x='PC1', y='PC2',
+            color='upjong',  # 색상으로 사용할 컬럼
+            hover_data=['original_info'],  # 마우스 Hover 시 보여줄 컬럼
+            title='Interactive PCA Visualization (2D)'
+        )
+        fig.update_traces(marker=dict(size=8, opacity=0.8))
+        fig.update_layout(height=600, width=800)
+
+        fig.show()
 
     def visualize_3d(self):
+        # 데이터 정제
         embedding_index = 40
         embeddings = self.df.iloc[:, embedding_index].apply(self.__parse_embedding)
         embeddings_matrix = np.vstack(embeddings.values)
+        # PCA 를 통해 차원 압축
         pca = PCA(n_components=3)
         reduced_embeddings = pca.fit_transform(embeddings_matrix)
 
-        original_features = self.df.select_dtypes(include=[np.number])
-        pca_corr = pd.DataFrame(reduced_embeddings, columns=['PC1', 'PC2', 'PC3']).join(original_features).corr()
-        print(pca_corr[['PC1', 'PC2', 'PC3']].sort_values(by='PC1', ascending=False))
         # PCA 결과 DataFrame 생성 (원본 데이터 정보 포함)
         result_df = pd.DataFrame({
             'PC1': reduced_embeddings[:, 0],
             'PC2': reduced_embeddings[:, 1],
             'PC3': reduced_embeddings[:, 2],
-            'original_info': self.df.iloc[:, 1],  # 예시로 첫 번째 컬럼 사용
-            'upjong': self.df.iloc[:, 6]
+            'original_info': self.df.iloc[:, 1],  # 마우스 올렸을 때 정보 확인
+            'upjong': self.df.iloc[:, 6] # 분포 색깔 확인
         })
 
         # PCA가 설명하는 분산 비율 출력 (각 PC의 중요성 파악)
@@ -73,8 +83,30 @@ class PCAService:
             hover_data=['original_info'],
             title='3D PCA Visualization of Embeddings'
         )
-
         fig.update_traces(marker=dict(size=4, opacity=0.7))
         fig.update_layout(height=700, width=800)
-
         fig.show()
+
+    def print_pca_pivot_means(self, reduced_embeddings):
+        # 워드 임베딩한 정보를 통해 처리하다보니 임베딩 필드의 각 차원이 의미하는바를 파악하기 어렵다
+        raise NotImplemented
+        # 원본 데이터의 수치형 컬럼만 뽑아옴
+        #
+        # original_features = self.df.select_dtypes(include=[np.number])
+        #
+        # # PCA 결과와 원본 데이터를 합쳐 상관관계 분석
+        # pca_df = pd.DataFrame(reduced_embeddings, columns=['PC1', 'PC2', 'PC3'])
+        # merged_df = pd.concat([pca_df, original_features], axis=1)
+        #
+        # # 상관관계 계산
+        # corr_matrix = merged_df.corr()
+        #
+        # # PCA 축별 상관관계 결과 보기 좋게 정렬
+        # print("📌 PC1과 원본 데이터의 상관관계 (절대값이 큰 순서로 정렬)")
+        # print(corr_matrix['PC1'].abs().sort_values(ascending=False).head(10))
+        #
+        # print("\n📌 PC2와 원본 데이터의 상관관계 (절대값이 큰 순서로 정렬)")
+        # print(corr_matrix['PC2'].abs().sort_values(ascending=False).head(10))
+        #
+        # print("\n📌 PC3와 원본 데이터의 상관관계 (절대값이 큰 순서로 정렬)")
+        # print(corr_matrix['PC3'].abs().sort_values(ascending=False).head(10))

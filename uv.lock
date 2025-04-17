@@ -110,31 +110,6 @@ wheels = [
 ]
 
 [[package]]
-name = "fastapiproject"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "fastapi" },
-    { name = "matplotlib" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "plotly" },
-    { name = "scikit-learn" },
-    { name = "uvicorn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "matplotlib", specifier = ">=3.10.1" },
-    { name = "numpy", specifier = ">=2.2.4" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "plotly", specifier = ">=6.0.1" },
-    { name = "scikit-learn", specifier = ">=1.6.1" },
-    { name = "uvicorn", specifier = ">=0.34.1" },
-]
-
-[[package]]
 name = "fonttools"
 version = "4.57.0"
 source = { registry = "https://pypi.org/simple" }
@@ -235,6 +210,31 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/05/f9/27e94c1b3eb29e6933b6986ffc5fa1177d2cd1f0c8efc5f02c91c9ac61de/kiwisolver-1.4.8-cp313-cp313t-musllinux_1_2_ppc64le.whl", hash = "sha256:151dffc4865e5fe6dafce5480fab84f950d14566c480c08a53c663a0020504b6", size = 2390661 },
     { url = "https://files.pythonhosted.org/packages/d9/d4/3c9735faa36ac591a4afcc2980d2691000506050b7a7e80bcfe44048daa7/kiwisolver-1.4.8-cp313-cp313t-musllinux_1_2_s390x.whl", hash = "sha256:577facaa411c10421314598b50413aa1ebcf5126f704f1e5d72d7e4e9f020d90", size = 2546710 },
     { url = "https://files.pythonhosted.org/packages/4c/fa/be89a49c640930180657482a74970cdcf6f7072c8d2471e1babe17a222dc/kiwisolver-1.4.8-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:be4816dc51c8a471749d664161b434912eee82f2ea66bd7628bd14583a833e85", size = 2349213 },
+]
+
+[[package]]
+name = "likelion-sangchu"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "fastapi" },
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "plotly" },
+    { name = "scikit-learn" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.115.12" },
+    { name = "matplotlib", specifier = ">=3.10.1" },
+    { name = "numpy", specifier = ">=2.2.4" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "plotly", specifier = ">=6.0.1" },
+    { name = "scikit-learn", specifier = ">=1.6.1" },
+    { name = "uvicorn", specifier = "==0.34.1" },
 ]
 
 [[package]]
